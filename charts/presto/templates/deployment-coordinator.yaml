@@ -38,6 +38,16 @@ spec:
         checksum/catalog: {{ include (print $.Template.BasePath "/configmap-catalog.yaml") . | sha256sum }}
         checksum/coordinator: {{ include (print $.Template.BasePath "/configmap-coordinator.yaml") . | sha256sum }}
     spec:
+      {{- if .Values.hostAliases }}
+      hostAliases:
+      {{- range .Values.hostAliases }}
+      - ip: {{ .ip | quote }}
+        hostnames:
+      {{- range .hostnames }}
+          - {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 8 }}
       {{- end }}
